@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">OctVehClient</string>
+    <string name="btn_confirm">连接</string>
+    <string name="btn_shut">关闭连接</string>
+    <string name="str_default_ip">192.168.1.1</string>
+    <string name="str_default_port">8888</string>
+    <string name="str_ip_error">IP输入错误</string>
+    <string name="str_port_error">Port输入错误</string>
+    <string name="str_connect_succed">连接成功</string>
+    <string name="str_connect_failed">连接失败</string>
+</resources>
