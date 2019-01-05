@@ -44,6 +44,7 @@ public class ControlActivity extends AppCompatActivity implements RockerView.OnR
 
 
     private SockService mService;
+    private boolean mHasBind;
 
     private RockerView mRv;
     private ImageView mIvShut;
@@ -89,8 +90,14 @@ public class ControlActivity extends AppCompatActivity implements RockerView.OnR
     }
 
     private void release() {
-        unbindService(CONNECTION);
-        mService = null;
+        try {
+            mService = null;
+            if (mHasBind) {
+                unbindService(CONNECTION);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
@@ -109,7 +116,7 @@ public class ControlActivity extends AppCompatActivity implements RockerView.OnR
 
     private void initService() {
         Intent intent = new Intent(getApplicationContext(), SockService.class);
-        bindService(intent, CONNECTION, 0);
+        mHasBind = bindService(intent, CONNECTION, 0);
     }
 
     private void handleOrder(String order) {
@@ -122,24 +129,44 @@ public class ControlActivity extends AppCompatActivity implements RockerView.OnR
     }
 
     private String parseOrder(float ratioX, float ratioY) {
-        if (Math.abs(ratioX) < 0.3 && Math.abs(ratioY) < 0.3) {
-            return "SPACE";
-        } else {
-            boolean isVertical = Math.abs(ratioX) < Math.abs(ratioY);
-            if (isVertical) {
-                if (ratioY < 0) {
-                    return "W";
-                } else {
-                    return "S";
-                }
-            } else {
-                if (ratioX < 0) {
-                    return "A";
-                } else {
-                    return "D";
-                }
-            }
+//        if (Math.abs(ratioX) < 0.3 && Math.abs(ratioY) < 0.3) {
+//            return "SPACE";
+//        } else {
+//            boolean isVertical = Math.abs(ratioX) < Math.abs(ratioY);
+//            if (isVertical) {
+//                if (ratioY < 0) {
+//                    return "W";
+//                } else {
+//                    return "S";
+//                }
+//            } else {
+//                if (ratioX < 0) {
+//                    return "A";
+//                } else {
+//                    return "D";
+//                }
+//            }
+//        }
+        String order = "";
+        if (ratioX > -0.25 && ratioX < 0.25 && ratioY < -0.75) {
+            order = "W";
+        } else if (ratioX > 0.25 && ratioX < 0.75 && ratioY > -0.75 && ratioY < -0.25) {
+            order = "E";
+        } else if (ratioX > 0.75 && ratioY > -0.25 && ratioY < 0.25) {
+            order = "D";
+        } else if (ratioX > 0.25 && ratioX < 0.75 && ratioY > 0.25 && ratioY < 0.75) {
+            order = "C";
+        } else if (ratioX > -0.25 && ratioX < 0.25 && ratioY > 0.75) {
+            order = "S";
+        } else if (ratioX > -0.75 && ratioX < -0.25 && ratioY > 0.25 && ratioY < 0.75) {
+            order = "Z";
+        } else if (ratioX < -0.75 && ratioY > -0.25 && ratioY < 0.25) {
+            order = "A";
+        } else if (ratioX > -0.75 && ratioX < -0.25 && ratioY > -0.75 && ratioY < -0.25) {
+            order = "Q";
         }
+//        Log.e("AAA", order);
+        return order;
     }
 
     private void showToast(int msgId) {
